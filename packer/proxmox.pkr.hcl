@@ -9,7 +9,7 @@ packer {
 
 variable "proxmox_url" {
   type    = string
-  default = "https://peach.voight.org:8006/api2/json"
+  default = "https://192.168.137.7:8006/api2/json"
 }
 
 variable "token" {
@@ -41,7 +41,6 @@ variable "iso_storage_pool" {
   type    = string
   default = "local"
 }
-
 
 variable "password" {
   type    = string
