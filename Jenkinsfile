@@ -24,7 +24,7 @@ stage ("Build") {
 
                 def password = sh(returnStdout: true, script: "openssl rand -base64 9")
                 def hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}")
-                sh "sed -i -E 's|\-\-password=(.*)|--password=${hash}|g' packer/http/ks-proxmox.cfg"
+                sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' packer/http/ks-proxmox.cfg"
 
                 container('packer'){
                     dir('packer'){
@@ -33,7 +33,7 @@ stage ("Build") {
                         }
                     }
                 }
-                sh "sed -i -E 's|\-\-password=(.*)|--password=randpass|g' packer/http/ks-proxmox.cfg"
+                sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' packer/http/ks-proxmox.cfg"
             }
         }
     }
