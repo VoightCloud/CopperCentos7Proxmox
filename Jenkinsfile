@@ -29,7 +29,7 @@ stage ("Build") {
                 container('packer'){
                     dir('packer'){
                         withCredentials([usernamePassword(credentialsId: 'proxmox_token', passwordVariable: 'packer_token', usernameVariable: 'packer_username')]) {
-                            sh "build --force proxmox.pkr.hcl"
+                            sh "packer build --force proxmox.pkr.hcl"
                         }
                     }
                 }
