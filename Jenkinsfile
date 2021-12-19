@@ -22,8 +22,8 @@ stage ("Build") {
                         extensions       : scm.extensions
                 ])
 
-                def password = sh(returnStdout: true, script: "openssl rand -base64 9")
-                def hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}")
+                def password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
+                def hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
                 sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' packer/http/ks-proxmox.cfg"
 
                 container('packer'){
