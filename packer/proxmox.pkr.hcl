@@ -1,11 +1,11 @@
-#packer {
-#  required_plugins {
-#    proxmox = {
-#      version = ">= 1.0.1"
-#      source  = "github.com/hashicorp/proxmox"
-#    }
-#  }
-#}
+packer {
+  required_plugins {
+    proxmox = {
+      version = ">= 1.0.1"
+      source  = "github.com/hashicorp/proxmox"
+    }
+  }
+}
 
 variable "proxmox_url" {
   type    = string
