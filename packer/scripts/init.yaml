@@ -1,0 +1,37 @@
+- name: Install required software
+  hosts: all
+  become: true
+  vars:
+    airgapped: false
+
+  tasks:
+    - name: Enable dracut
+      command: dracut -f
+      become: yes
+
+    - name: Skel initialization file permissions
+      file:
+        path: "/etc/skel/{{ item }}"
+        mode: '0640'
+      become: yes
+      with_items:
+        - ".bash_logout"
+        - ".bash_profile"
+        - ".bashrc"
+
+## * * * * * * * * * * * * * * * * * * * * * * * * *
+## For an air-gapped environment, set the airgapped variable to true to skip this block
+    - block:
+      - name: Update yum
+        yum:
+          name: '*'
+          state: latest
+        become: yes
+
+      - name: Install yum utils
+        yum:
+          name: 'yum-utils'
+          state: latest
+        become: yes
+
+      when: airgapped == false
