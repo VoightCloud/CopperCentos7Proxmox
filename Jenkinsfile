@@ -15,7 +15,9 @@ stage ("Build") {
                             command: 'cat',
                             privileged: false),
                     containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest-jdk11', args: '${computer.jnlpmac} ${computer.name}'),
-                    containerTemplate(name: 'mkisofs', image: "n13org/mkisofs:latest", alwaysPullImage: false, ttyEnabled: true, command: 'cat', privileged: false)
+                    containerTemplate(name: 'mkisofs', image: "n13org/mkisofs:latest", alwaysPullImage: false, ttyEnabled: true, command: 'cat', privileged: false),
+                    containerTemplate(name: 'curl', image: "curlimages/curl:7.80.0", alwaysPullImage: false, ttyEnabled: true, command: 'cat', privileged: false)
+
             ],
             nodeSelector: 'kubernetes.io/arch=amd64'
     ) {
@@ -40,20 +42,26 @@ stage ("Build") {
                             sh "mkisofs -o ${ksisoname} http"
                         }
                     }
-                    sh "curl -s -X POST 'https://peach.voight.org:8006/api2/json/nodes/ugli/storage/local/upload' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'  -F 'content=iso' -F 'filename=@${ksisoname}'"
+                    container('curl'){
+                        dir('packer'){
+                            sh "curl -s -X POST 'https://peach.voight.org:8006/api2/json/nodes/ugli/storage/local/upload' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'  -F 'content=iso' -F 'filename=@${ksisoname}'"
+                        }
+                    }
 
                     sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' packer/http/ks-proxmox.cfg"
 
                     container('packer'){
                         dir('packer'){
-
                                 sh "packer init proxmox.pkr.hcl"
                                 sh "packer build --force proxmox.pkr.hcl"
+                                sh "rm ${ksisoname}"
+
                         }
                     }
-                    sh "curl -s -X DELETE 'https://peach.voight.org:8006/api2/json/nodes/ugli/storage/local/content//local:iso/${ksisoname}' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
+                    container('curl'){
+                        sh "curl -s -X DELETE 'https://peach.voight.org:8006/api2/json/nodes/ugli/storage/local/content//local:iso/${ksisoname}' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
+                    }
 
-                    sh "rm ${ksisoname}"
                 }
             }
         }
