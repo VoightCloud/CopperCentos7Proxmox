@@ -40,7 +40,7 @@ stage ("Build") {
                             sh "mkisofs -o ${ksisoname} http"
 
 
-                            sh('-k -v -s verbose-X POST https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/upload -H "Authorization: PVEAPIToken=$packer_username=$packer_token"  -F "content=iso" -F "filename=@${ksisoname}"')
+                            sh('curl -k -v -s verbose-X POST https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/upload -H "Authorization: PVEAPIToken=$packer_username=$packer_token"  -F "content=iso" -F "filename=@${ksisoname}"')
 
 
                             sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' http/ks-proxmox.cfg"
