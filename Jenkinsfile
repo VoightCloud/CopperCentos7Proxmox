@@ -36,9 +36,11 @@ stage ("Build") {
 
                     sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' packer/http/ks-proxmox.cfg"
                     container('mkisofs'){
-                        sh "mkisofs -o ${ksisoname} http"
+                    dir('packer'){
+                            sh "mkisofs -o ${ksisoname} http"
 
-                        sh "curl -s -X POST 'https://peach.voight.org:8006/api2/json/nodes/ugli/storage/local/upload' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'  -F 'content=iso' -F 'filename=@${ksisoname}'"
+                            sh "curl -s -X POST 'https://peach.voight.org:8006/api2/json/nodes/ugli/storage/local/upload' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'  -F 'content=iso' -F 'filename=@${ksisoname}'"
+                        }
                     }
                     sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' packer/http/ks-proxmox.cfg"
 
