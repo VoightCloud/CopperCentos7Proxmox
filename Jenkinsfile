@@ -35,7 +35,7 @@ stage ("Build") {
                             password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
                             hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
 
-                            sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' packer/http/ks-proxmox.cfg"
+                            sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' http/ks-proxmox.cfg"
 
                             sh "mkisofs -o ${ksisoname} http"
 
@@ -43,7 +43,7 @@ stage ("Build") {
                             sh('-k -v -s verbose-X POST https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/upload -H "Authorization: PVEAPIToken=$packer_username=$packer_token"  -F "content=iso" -F "filename=@${ksisoname}"')
 
 
-                            sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' packer/http/ks-proxmox.cfg"
+                            sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' http/ks-proxmox.cfg"
 
 
                             sh "packer init proxmox.pkr.hcl"
