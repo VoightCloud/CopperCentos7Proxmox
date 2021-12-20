@@ -1,8 +1,8 @@
-def epoch = sh(returnStdout: true, script: "date +\"%s\"").trim()
-def ksisoname = "ks-proxmox-${epoch}.iso"
-def templateName = "copper-centos7-${epoch}"
-def password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
-def hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
+def epoch
+def ksisoname
+def templateName
+def password
+def hash
 
 stage ("Build") {
     podTemplate(
@@ -28,6 +28,11 @@ stage ("Build") {
                         extensions       : scm.extensions
                 ])
                 withCredentials([usernamePassword(credentialsId: 'proxmox_token', passwordVariable: 'packer_token', usernameVariable: 'packer_username')]) {
+                    epoch = sh(returnStdout: true, script: "date +\"%s\"").trim()
+                    ksisoname = "ks-proxmox-${epoch}.iso"
+                    templateName = "copper-centos7-${epoch}"
+                    password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
+                    hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
 
                     sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' packer/http/ks-proxmox.cfg"
                     container('mkisofs'){
