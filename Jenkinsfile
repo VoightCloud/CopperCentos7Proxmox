@@ -37,6 +37,8 @@ stage ("Build") {
 
                             sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' http/ks-proxmox.cfg"
 
+                            sh "apt install mkisofs"
+
                             sh "mkisofs -o ${ksisoname} http"
 
 
