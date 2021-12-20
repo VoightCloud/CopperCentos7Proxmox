@@ -22,7 +22,7 @@ stage ("Build") {
                         extensions       : scm.extensions
                 ])
                 withCredentials([usernamePassword(credentialsId: 'proxmox_token', passwordVariable: 'packer_token', usernameVariable: 'packer_username')]) {
-                    def epoch = sh(returnStdout: true, script: "date +"%s")
+                    def epoch = sh(returnStdout: true, script: "date +\"%s\"")
                     def ksisoname = "ks-proxmox-${epoch}.iso"
                     def templateName = "copper-centos7-${date}"
 
