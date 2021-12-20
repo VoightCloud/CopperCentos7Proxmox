@@ -24,7 +24,7 @@ stage ("Build") {
                 withCredentials([usernamePassword(credentialsId: 'proxmox_token', passwordVariable: 'packer_token', usernameVariable: 'packer_username')]) {
                     def epoch = sh(returnStdout: true, script: "date +\"%s\"")
                     def ksisoname = "ks-proxmox-${epoch}.iso"
-                    def templateName = "copper-centos7-${date}"
+                    def templateName = "copper-centos7-${epoch}"
 
                     def password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
                     def hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
