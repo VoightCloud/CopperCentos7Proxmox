@@ -16,7 +16,7 @@ stage ("Build") {
                             privileged: false),
                     containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest-jdk11', args: '${computer.jnlpmac} ${computer.name}'),
                     containerTemplate(name: 'mkisofs', image: "n13org/mkisofs:latest", alwaysPullImage: false, ttyEnabled: true, command: 'cat', privileged: false),
-                    containerTemplate(name: 'curl', image: "curlimages/curl:7.80.0", alwaysPullImage: false, ttyEnabled: true, command: 'cat', privileged: false)
+                    containerTemplate(name: 'curl', image: "curlimages/curl:7.80.0", alwaysPullImage: false, ttyEnabled: true, privileged: false)
 
             ],
             nodeSelector: 'kubernetes.io/arch=amd64'
