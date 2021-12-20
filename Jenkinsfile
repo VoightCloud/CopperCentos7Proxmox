@@ -37,14 +37,15 @@ stage ("Build") {
                     hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
 
                     sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' packer/http/ks-proxmox.cfg"
+
                     container('mkisofs'){
-                    dir('packer'){
+                        dir('packer'){
                             sh "mkisofs -o ${ksisoname} http"
                         }
                     }
                     container('curl'){
                         dir('packer'){
-                            sh('curl -s -X POST https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/upload -H "Authorization: PVEAPIToken=$packer_username=$packer_token"  -F "content=iso" -F "filename=@${ksisoname}"')
+                            sh('-s -X POST https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/upload -H "Authorization: PVEAPIToken=$packer_username=$packer_token"  -F "content=iso" -F "filename=@${ksisoname}"')
                         }
                     }
 
