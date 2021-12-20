@@ -1,3 +1,8 @@
+def epoch = sh(returnStdout: true, script: "date +\"%s\"").trim()
+def ksisoname = "ks-proxmox-${epoch}.iso"
+def templateName = "copper-centos7-${epoch}"
+def password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
+def hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
 
 stage ("Build") {
     podTemplate(
@@ -9,7 +14,8 @@ stage ("Build") {
                             ttyEnabled: true,
                             command: 'cat',
                             privileged: false),
-                    containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest-jdk11', args: '${computer.jnlpmac} ${computer.name}')
+                    containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest-jdk11', args: '${computer.jnlpmac} ${computer.name}'),
+                    containerTemplate(name: 'mkisofs', image: "n13org/mkisofs:latest", alwaysPullImage: false, ttyEnabled: true, command: 'cat', privileged: false)
             ],
             nodeSelector: 'kubernetes.io/arch=amd64'
     ) {
@@ -22,18 +28,13 @@ stage ("Build") {
                         extensions       : scm.extensions
                 ])
                 withCredentials([usernamePassword(credentialsId: 'proxmox_token', passwordVariable: 'packer_token', usernameVariable: 'packer_username')]) {
-                    def epoch = sh(returnStdout: true, script: "date +\"%s\"").trim()
-                    def ksisoname = "ks-proxmox-${epoch}.iso"
-                    def templateName = "copper-centos7-${epoch}"
 
-                    def password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
-                    def hash =  sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
                     sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' packer/http/ks-proxmox.cfg"
-                    sh "apk add --no-cache xorriso"
-                    sh "mkisofs -o ${ksisoname} http"
+                    container('mkisofs'){
+                        sh "mkisofs -o ${ksisoname} http"
 
-                    sh "curl -s -X POST 'https://peach.voight.org:8006/api2/json/nodes/ugli/storage/local/upload' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'  -F 'content=iso' -F 'filename=@${ksisoname}'"
-
+                        sh "curl -s -X POST 'https://peach.voight.org:8006/api2/json/nodes/ugli/storage/local/upload' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'  -F 'content=iso' -F 'filename=@${ksisoname}'"
+                    }
                     sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' packer/http/ks-proxmox.cfg"
 
                     container('packer'){
