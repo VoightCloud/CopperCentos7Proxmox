@@ -44,22 +44,22 @@ variable "iso_storage_pool" {
 
 variable "password" {
   type    = string
-  default = env("password")
+  default = env("PASSWORD")
 }
 
 variable "templateName" {
   type    = string
-  default = env("templateName")
+  default = env("TEMPLATENAME")
 }
 
 variable "ksisoname" {
   type    = string
-  default = env("ksisoname")
+  default = env("KSISONAME")
 }
 
 variable "ksisochecksum" {
   type    = string
-  default = env("ksisochecksum")
+  default = env("KSISOCHECKSUM")
 }
 
 variable "memory" {
