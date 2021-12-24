@@ -36,7 +36,7 @@ podTemplate(label: "build",
                         sh "mkisofs -o ${ksisoname} http"
                         ksisochecksum = sh(returnStdout: true, script: "sh -c \"sha256sum ${ksisoname}|awk '{print \$1}'\"").trim()
 
-                        sh('curl -k -s -X POST https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/upload -H "Authorization: PVEAPIToken=$packer_username=$packer_token"  -F "content=iso" -F "filename=@${ksisoname}"')
+                        sh "curl -k -s -X POST https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/upload -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'  -F 'content=iso' -F 'filename=@${ksisoname}'"
 
 
                         sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' http/ks-proxmox.cfg"
