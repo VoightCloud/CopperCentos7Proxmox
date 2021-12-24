@@ -1,5 +1,6 @@
 def epoch
 def ksisoname
+def ksisochecksum
 def templateName
 def password
 def hash
