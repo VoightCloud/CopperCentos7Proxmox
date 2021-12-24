@@ -7,8 +7,8 @@ def hash
 pipeline {
     agent any
     stages {
-        stage ('Build'){
-            step('Checkout'){
+        stage ('Build') {
+            steps {
                 def scmVars = checkout([
                         $class           : 'GitSCM',
                         userRemoteConfigs: scm.userRemoteConfigs,
