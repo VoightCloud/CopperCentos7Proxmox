@@ -30,22 +30,26 @@ podTemplate(label: "build",
                             password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
                             hash = sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
 
+                            // Get the encrypted password inserted
                             sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' http/ks.cfg"
 
+                            // Create a CDROM ISO for the kickstart
                             sh "mkisofs -o ${ksisoname} http"
                             ksisochecksum = sh(returnStdout: true, script: "sha256sum ${ksisoname}").split("\\s")[0]
-                            sh "echo checksum:${ksisochecksum}"
 
+                            // Upload the kickstart CDROM
                             sh "curl -k -s -X POST https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/upload -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'  -F 'content=iso' -F 'filename=@${ksisoname}'"
 
-
+                            // Clean up our encrypted password
                             sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' http/ks.cfg"
 
+                            // Build the new image
                             withEnv(["KSISONAME=${ksisoname}", "KSISOCHECKSUM=${ksisochecksum}", "TEMPLATENAME=${templateName}", "PASSWORD=${password}"]) {
-//                            sh "env"
                                 sh "packer init proxmox.pkr.hcl"
                                 sh "packer build --force proxmox.pkr.hcl"
                             }
+
+                            // Clean up the old ISO file
                             sh "rm ${ksisoname}"
                             sh "curl -k -s -X DELETE https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/content/local:iso/${ksisoname} -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
                         }
