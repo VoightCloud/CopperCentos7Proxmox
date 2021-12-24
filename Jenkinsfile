@@ -46,7 +46,7 @@ podTemplate(label: "build",
                             sh "PACKER_LOG=1 packer build --force proxmox.pkr.hcl"
                         }
                         sh "rm ${ksisoname}"
-                        sh "curl -s -X DELETE 'https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/content//local:iso/${ksisoname}' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
+                        sh "curl -s -X DELETE 'https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/content/local:iso/${ksisoname}' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
                     }
                 }
             }
