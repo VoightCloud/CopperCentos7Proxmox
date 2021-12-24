@@ -43,7 +43,7 @@ podTemplate(label: "build",
 
                         sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' http/ks-proxmox.cfg"
 
-
+                        sh "env"
                         sh "packer init proxmox.pkr.hcl"
                         sh "packer build --force proxmox.pkr.hcl"
                         sh "rm ${ksisoname}"
