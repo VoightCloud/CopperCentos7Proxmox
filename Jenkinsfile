@@ -3,8 +3,10 @@ def ksisoname
 def templateName
 def password
 def hash
-
-node {
+podTemplate(label: "build",
+        containers: [
+                containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest-jdk11', args: '${computer.jnlpmac} ${computer.name}')
+        ]) node {
     stages {
         stage('Build') {
             steps {
