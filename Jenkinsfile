@@ -12,6 +12,15 @@ podTemplate(label: "build",
     node('build') {
         stage('Build') {
             container('packer-terraform') {
+                environment {
+                    EPOCH = 'EPOCH'
+                    KSISONAME = 'KSISONAME'
+                    KSISOCHECKSUM = 'KSISOCHECKSUM'
+                    TEMPLATENAME = 'TEMPLATENAME'
+                    PASSWORD = 'PASSWORD'
+                    HASH = 'HASH'
+                }
+
                 def scmVars = checkout([
                         $class           : 'GitSCM',
                         userRemoteConfigs: scm.userRemoteConfigs,
@@ -20,14 +29,7 @@ podTemplate(label: "build",
                 ])
 
                 withCredentials([usernamePassword(credentialsId: 'proxmox_token', passwordVariable: 'packer_token', usernameVariable: 'packer_username')]) {
-                    environment {
-                        EPOCH = 'EPOCH'
-                        KSISONAME = 'KSISONAME'
-                        KSISOCHECKSUM = 'KSISOCHECKSUM'
-                        TEMPLATENAME = 'TEMPLATENAME'
-                        PASSWORD = 'PASSWORD'
-                        HASH = 'HASH'
-                    }
+
                     dir('packer') {
                         EPOCH = sh(returnStdout: true, script: "date +%s").trim()
                         KSISONAME = "ks-proxmox-${EPOCH}.iso"
