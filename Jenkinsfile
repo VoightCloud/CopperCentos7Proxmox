@@ -1,12 +1,4 @@
 
-environment {
-    EPOCH = ''
-    KSISONAME = ''
-    KSISOCHECKSUM = ''
-    TEMPLATENAME = ''
-    PASSWORD = ''
-    HASH = ''
-}
 podTemplate(label: "build",
         containers: [
                 containerTemplate(name: 'packer-terraform',
@@ -28,6 +20,14 @@ podTemplate(label: "build",
                 ])
 
                 withCredentials([usernamePassword(credentialsId: 'proxmox_token', passwordVariable: 'packer_token', usernameVariable: 'packer_username')]) {
+                    environment {
+                        EPOCH = 'EPOCH'
+                        KSISONAME = 'KSISONAME'
+                        KSISOCHECKSUM = 'KSISOCHECKSUM'
+                        TEMPLATENAME = 'TEMPLATENAME'
+                        PASSWORD = 'PASSWORD'
+                        HASH = 'HASH'
+                    }
                     dir('packer') {
                         EPOCH = sh(returnStdout: true, script: "date +%s").trim()
                         KSISONAME = "ks-proxmox-${EPOCH}.iso"
