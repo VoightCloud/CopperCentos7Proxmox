@@ -6,7 +6,7 @@ def hash
 podTemplate(label: "build",
         containers: [
                 containerTemplate(name: 'packer-terraform',
-                        image: 'voight/packer-terraform:1.0',
+                        image: 'voight/packer-terraform:1.1',
                         alwaysPullImage: false,
                         ttyEnabled: true,
                         privileged: true,
