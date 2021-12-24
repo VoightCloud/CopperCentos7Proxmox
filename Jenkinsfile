@@ -43,10 +43,10 @@ podTemplate(label: "build",
                         withEnv(["KSISONAME=${ksisoname}", "KSISOCHECKSUM=${ksisochecksum}", "TEMPLATENAME=${templateName}", "PASSWORD=${password}"]) {
 //                            sh "env"
                             sh "packer init proxmox.pkr.hcl"
-                            sh "PACKER_LOG=1 packer build --force proxmox.pkr.hcl"
+                            sh "packer build --force proxmox.pkr.hcl"
                         }
                         sh "rm ${ksisoname}"
-                        sh "curl -s -X DELETE 'https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/content/local:iso/${ksisoname}' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
+                        sh "curl -k -s -X DELETE https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/content/local:iso/${ksisoname} -H -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
                     }
                 }
             }
