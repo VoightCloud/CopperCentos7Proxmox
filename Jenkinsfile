@@ -29,7 +29,7 @@ podTemplate(label: "build",
                         password = sh(returnStdout: true, script: "openssl rand -base64 9").trim()
                         hash = sh(returnStdout: true, script: "openssl passwd -6 ${password}").trim()
 
-                        sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' http/ks-proxmox.cfg"
+                        sh "sed -i -E 's|\\-\\-password=(.*)|--password=${hash}|g' http/ks.cfg"
 
                         sh "mkisofs -o ${ksisoname} http"
                         ksisochecksum = sh(returnStdout: true, script: "sha256sum ${ksisoname}").split("\\s")[0]
