@@ -11,15 +11,16 @@ podTemplate(label: "build",
         ]) {
     node('build') {
         stage('Build') {
+            environment {
+                EPOCH = 'EPOCH'
+                KSISONAME = 'KSISONAME'
+                KSISOCHECKSUM = 'KSISOCHECKSUM'
+                TEMPLATENAME = 'TEMPLATENAME'
+                PASSWORD = 'PASSWORD'
+                HASH = 'HASH'
+            }
+
             container('packer-terraform') {
-                environment {
-                    EPOCH = 'EPOCH'
-                    KSISONAME = 'KSISONAME'
-                    KSISOCHECKSUM = 'KSISOCHECKSUM'
-                    TEMPLATENAME = 'TEMPLATENAME'
-                    PASSWORD = 'PASSWORD'
-                    HASH = 'HASH'
-                }
 
                 def scmVars = checkout([
                         $class           : 'GitSCM',
