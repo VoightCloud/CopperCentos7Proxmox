@@ -41,9 +41,9 @@ podTemplate(label: "build",
                         sh "sed -i -E 's|\\-\\-password=(.*)|--password=randpass|g' http/ks-proxmox.cfg"
 
                         withEnv(["KSISONAME=${ksisoname}", "KSISOCHECKSUM=${ksisochecksum}", "TEMPLATENAME=${templateName}", "PASSWORD=${password}"]) {
-                            sh "env"
+//                            sh "env"
                             sh "packer init proxmox.pkr.hcl"
-                            sh "packer build --force proxmox.pkr.hcl"
+                            sh "PACKER_LOG=1 packer build --force proxmox.pkr.hcl"
                         }
                         sh "rm ${ksisoname}"
                         sh "curl -s -X DELETE 'https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/content//local:iso/${ksisoname}' -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
