@@ -19,6 +19,16 @@
         - ".bash_profile"
         - ".bashrc"
 
+    - name: Install remaining packages
+      yum:
+        name:
+          - cloud-utils-growpart
+          - unzip
+          - wget
+          - yum-utils
+        state: latest
+      become: yes
+
     - name: package-cleanup
       command: package-cleanup --oldkernels --count=1
       become: yes
