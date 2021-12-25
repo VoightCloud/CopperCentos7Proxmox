@@ -22,12 +22,6 @@
 ## * * * * * * * * * * * * * * * * * * * * * * * * *
 ## For an air-gapped environment, set the airgapped variable to true to skip this block
     - block:
-        - name: Update yum
-          yum:
-            name: '*'
-            state: latest
-          become: yes
-
       - name: Install yum utils
         yum:
           name:
