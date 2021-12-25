@@ -28,7 +28,3 @@
           - yum-utils
         state: latest
       become: yes
-
-    - name: package-cleanup
-      command: package-cleanup --oldkernels --count 1
-      become: yes

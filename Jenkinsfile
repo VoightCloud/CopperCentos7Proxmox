@@ -56,10 +56,54 @@ podTemplate(label: "build",
 
                             // Clean up the old ISO file
                             sh "rm ${ksisoname}"
-                            sh "curl -k -s -X DELETE https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/content/local:iso/${ksisoname} -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
                         }
                     }
                 }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                status = "SUCCESS"
+            }
+        }
+        unstable {
+            script {
+                status = "UNSTABLE"
+            }
+        }
+        aborted {
+            script {
+                status = "ABORTED"
+            }
+        }
+        failure {
+            script {
+                status = "FAILED"
+            }
+        }
+        changed {
+            echo 'Things were different before...'
+        }
+//        always {
+//            script {
+//                // ALWAYS terminate old instance
+//                terraform.terminateInstance(INSTANCE_ID)
+//            }
+//        }
+        cleanup {
+            script {
+                // ALWAYS terminate old instance
+                withCredentials([usernamePassword(credentialsId: 'proxmox_token', passwordVariable: 'packer_token', usernameVariable: 'packer_username')]) {
+                    sh "curl -k -s -X DELETE https://192.168.137.7:8006/api2/json/nodes/ugli/storage/local/content/local:iso/${ksisoname} -H 'Authorization: PVEAPIToken=$packer_username=$packer_token'"
+                }
+//                emailext body: '''${SCRIPT, template="ice.gwf.feature.template"}''',
+//                        mimeType: 'text/html',
+//                        subject: "[Jenkins] (${status}) ${currentBuild.fullDisplayName}",
+//                        to: "${env.STATIC_NOTIFICATION_LIST}",
+//                        replyTo: "${env.STATIC_NOTIFICATION_LIST}"
             }
         }
     }
