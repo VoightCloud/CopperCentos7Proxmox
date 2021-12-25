@@ -25,7 +25,6 @@
       - name: Install yum utils
         yum:
           name:
-            - cloud-init
             - cloud-utils-growpart
             - unzip
             - wget
