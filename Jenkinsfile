@@ -1,3 +1,8 @@
+def epoch
+def ksisoname
+def templateName
+def password
+def hash
 
 podTemplate(label: "build",
         containers: [
