@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -e -x
+#set -e -x
+set -e
 # Enable DNS -- AWS, ADEX, NOC
 # sudo nmcli con mod enp0s3 ipv4.dns "10.168.88.2 10.168.62.24 10.48.69.84"
 # Add sudoers file and cloud.cfg
@@ -30,7 +31,7 @@ sudo update-ca-trust extract
 ## * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 # Install pip, and ansible
-sudo yum install python3-pip
+sudo yum install python3-pip -y
 sudo pip3 install --upgrade pip
 sudo pip3 install wheel
 sudo pip3 install selinux
