@@ -32,8 +32,4 @@
             - yum-utils
           state: latest
         become: yes
-
-
-
-
       when: airgapped == false
