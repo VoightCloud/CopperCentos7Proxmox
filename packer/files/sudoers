@@ -21,6 +21,7 @@ Defaults:zzadmin        !requiretty
 
 root    ALL=(ALL)       ALL
 %wheel  ALL=(ALL)       NOPASSWD: ALL
+ec2-admin ALL=(ALL)     NOPASSWD: ALL
 
 #In accordance with ICE Security Policy only one Authentication is required - Nov 3 2014
 ## ICE ASB Command Aliases ##
@@ -28,8 +29,8 @@ Cmnd_Alias   RESTRICT_ROOT = !/bin/su -, !/bin/su - root, !/bin/su root
 Cmnd_Alias   RESTRICT_ADMIN = !/usr/sbin/visudo, !/bin/vi /etc/sudoers, !/bin/vim /etc/sudoers, !/usr/sbin/useradd, !/usr/sbin/userdel, !/usr/sbin/usermod, !/usr/bin/chage, !/usr/bin/sudo /bin/bash
 
 ## ASB Administrative Accounts
-%linux_infrastructure_admins  ALL=(ALL)  NOPASSWD: ALL,RESTRICT_ROOT
-%linux_middletier_admins  ALL=(ALL)  NOPASSWD: ALL,RESTRICT_ADMIN
+# %linux_infrastructure_admins  ALL=(ALL)  NOPASSWD: ALL,RESTRICT_ROOT
+# %linux_middletier_admins  ALL=(ALL)  NOPASSWD: ALL,RESTRICT_ADMIN
 
 # Added by cloud-init v. 0.7.9 on Mon, 24 Sep 2018 19:30:17 +0000
 #includedir /etc/sudoers.d
