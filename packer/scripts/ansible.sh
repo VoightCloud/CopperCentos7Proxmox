@@ -31,7 +31,6 @@ sudo update-ca-trust extract
 ## * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 # Install pip, and ansible
-sudo yum install python3-pip -y
 sudo pip3 install --upgrade pip
 sudo pip3 install wheel
 sudo pip3 install selinux

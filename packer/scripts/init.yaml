@@ -22,16 +22,23 @@
 ## * * * * * * * * * * * * * * * * * * * * * * * * *
 ## For an air-gapped environment, set the airgapped variable to true to skip this block
     - block:
+      - name: Install yum utils
+        yum:
+          name:
+            - yum-utils
+            - cloud-init
+            - cloud-utils-growpart
+            - unzip
+            - wget
+          state: latest
+        become: yes
+
       - name: Update yum
         yum:
           name: '*'
           state: latest
         become: yes
 
-      - name: Install yum utils
-        yum:
-          name: 'yum-utils'
-          state: latest
-        become: yes
+
 
       when: airgapped == false
