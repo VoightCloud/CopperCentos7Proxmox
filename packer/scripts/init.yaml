@@ -19,16 +19,6 @@
         - ".bash_profile"
         - ".bashrc"
 
-## * * * * * * * * * * * * * * * * * * * * * * * * *
-## For an air-gapped environment, set the airgapped variable to true to skip this block
-    - block:
-      - name: Install yum utils
-        yum:
-          name:
-            - cloud-utils-growpart
-            - unzip
-            - wget
-            - yum-utils
-          state: latest
-        become: yes
-      when: airgapped == false
+    - name: package-cleanup
+      command: package-cleanup --oldkernels --count=1
+      become: yes
